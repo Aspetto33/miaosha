@@ -39,7 +39,7 @@ public class UserModel {
         return gender;
     }
 
-    public void setGender(Integer gender) {
+    public void setGender(Byte gender) {
         this.gender = gender;
     }
 
