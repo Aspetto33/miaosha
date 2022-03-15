@@ -11,6 +11,7 @@ import com.miaosha.service.UserService;
 import com.miaosha.service.model.UserModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,12 @@ public class UserServiceImpl implements UserService {
 
         //实现model->dataobject方法
         UserDO userDO = convertFromModel(userModel);
-        userDOMapper.insertSelective(userDO);
+        try{
+            userDOMapper.insertSelective(userDO);
+        }catch (DuplicateKeyException ex){
+            throw new BusinessException(PARAMETER_VALIDATION_ERROR,"手机号已重复注册");
+        }
+
         UserPasswordDO userPasswordDO = convertPasswordFromModel(userModel);
         userPasswordDOMapper.insertSelective(userPasswordDO);
 
