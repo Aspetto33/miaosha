@@ -6,6 +6,7 @@ import com.miaosha.error.EnumBusinessError;
 import com.miaosha.response.CommonReturnType;
 import com.miaosha.service.UserService;
 import com.miaosha.service.model.UserModel;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,28 @@ public class UserController extends BaseController{
 
     @Resource
     private HttpServletRequest httpServletRequest;
+    //用户登录接口
+    @RequestMapping(value = "/login",method = {RequestMethod.POST},consumes = {"application/x-www-form-urlencoded"})
+    @ResponseBody
+    public CommonReturnType login(@RequestParam(name = "telephone")String telephone,
+                                  @RequestParam(name = "password")String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        //入参校验
+        if(StringUtils.isEmpty(telephone)||
+           StringUtils.isEmpty(password)){
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+
+        //用户登录服务，用来校验用户登录是否合法
+        UserModel userModel = userService.validateLogin(telephone,this.EncodeByMd5(password));
+
+        //将登录凭证加入到用户登录成功的session内
+        this.httpServletRequest.getSession().setAttribute("IS_LOGIN",true);
+        this.httpServletRequest.getSession().setAttribute("LOGIN_USER",userModel);
+
+        return CommonReturnType.create(null);
+
+    }
 
     //用户注册接口
     @RequestMapping(value = "/register",method = {RequestMethod.POST},consumes = {"application/x-www-form-urlencoded"})
