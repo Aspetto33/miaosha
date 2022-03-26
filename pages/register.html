@@ -25,7 +25,7 @@
 	                              <button class="ui teal button">
 	                                手机号：
 	                              </button>
-	                              <input type="text" placeholder="手机号" name="telphone" id="telphone" />
+	                              <input type="text" placeholder="手机号" name="telephone" id="telephone" />
 	                            </div>
 	                        </div>
 	                        <div class="field">
@@ -86,13 +86,13 @@
 		jQuery(document).ready(function(){
 			//绑定otp的click事件用于向后端获取验证码
 			$("#register").on("click", function(){
-				var telphone = $("#telphone").val();
+				var telephone = $("#telephone").val();
 				var otpCode = $("#otpCode").val();
 				var name = $("#name").val();
 				var gender = $("#gender").val();
 				var age = $("#age").val();
 				var password = $("#password").val();
-				if(telphone == null || telphone == ""){
+				if(telephone == null || telephone == ""){
 					alert("手机号不能为空");
 					return false;
 				}
@@ -119,9 +119,9 @@
 				$.ajax({
 					type:"POST",
 					contentType:"application/x-www-form-urlencoded",
-					url:"http://localhost:8888/user/register",
+					url:"http://localhost:8090/user/register",
 					data:{
-						"telphone": telphone,
+						"telephone": telephone,
 						"otpCode": otpCode,
 						"name": name,
 						"gender": gender,
