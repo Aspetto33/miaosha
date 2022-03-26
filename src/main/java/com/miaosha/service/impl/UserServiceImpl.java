@@ -9,6 +9,8 @@ import com.miaosha.error.BusinessException;
 import com.miaosha.error.EnumBusinessError;
 import com.miaosha.service.UserService;
 import com.miaosha.service.model.UserModel;
+import com.miaosha.validator.ValidationResult;
+import com.miaosha.validator.ValidatorImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -27,6 +29,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserPasswordDOMapper userPasswordDOMapper;
+
+    @Resource
+    private ValidatorImpl validator;
 
     @Override
     public UserModel getUserById(Integer id) {
@@ -49,17 +54,21 @@ public class UserServiceImpl implements UserService {
         if(userModel == null){
             throw new BusinessException(PARAMETER_VALIDATION_ERROR);
         }
-        if(StringUtils.isEmpty(userModel.getName())
-                || userModel.getGender() == null
-                || userModel.getAge() == null
-                || StringUtils.isEmpty(userModel.getTelephone())){
-            throw new BusinessException(PARAMETER_VALIDATION_ERROR);
-        }
+//        if(StringUtils.isEmpty(userModel.getName())
+//                || userModel.getGender() == null
+//                || userModel.getAge() == null
+//                || StringUtils.isEmpty(userModel.getTelephone())){
+//            throw new BusinessException(PARAMETER_VALIDATION_ERROR);
+        ValidationResult validate = validator.validate(userModel);
+        if(validate.isHasErrors()){
+            throw new BusinessException(PARAMETER_VALIDATION_ERROR,validate.getErrMsg());
+    }
 
         //实现model->dataobject方法
         UserDO userDO = convertFromModel(userModel);
         try{
             userDOMapper.insertSelective(userDO);
+            userModel.setId(userDO.getId());
         }catch (DuplicateKeyException ex){
             throw new BusinessException(PARAMETER_VALIDATION_ERROR,"手机号已重复注册");
         }
