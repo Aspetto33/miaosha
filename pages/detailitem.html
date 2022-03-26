@@ -78,7 +78,7 @@
 				$.ajax({
 					type:"POST",
 					contentType:"application/x-www-form-urlencoded",
-					url:"http://localhost:8888/order/createOrder",
+					url:"http://localhost:8090/order/createOrder",
 					data:{
 						"itemId": g_itemVO.id,
 						"amount": 1,
@@ -106,7 +106,7 @@
 				//获取商品详情
 				$.ajax({
 					type:"GET",
-					url:"http://localhost:8888/item/getItem",
+					url:"http://localhost:8090/item/getItem",
 					data:{
 						"id": getParam("id")
 					},

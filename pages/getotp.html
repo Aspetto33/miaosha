@@ -23,7 +23,7 @@
 							<div class="field">
 								<div class="ui left icon input">
 									<i class="user icon"></i>
-									<input type="text" id="telphone" name="telphone" placeholder="手机号">
+									<input type="text" id="telephone" name="telephone" placeholder="手机号">
 								</div>
 							</div>
 							<div class="field">
@@ -50,17 +50,17 @@
 		jQuery(document).ready(function(){
 			//绑定otp的click事件用于向后端获取验证码
 			$("#getotp").on("click", function(){
-				var telphone = $("#telphone").val();
-				if(telphone == null || telphone == ""){
+				var telephone = $("#telephone").val();
+				if(telephone == null || telephone == ""){
 					alert("手机号不能为空");
 					return false;
 				}
 				$.ajax({
 					type:"POST",
 					contentType:"application/x-www-form-urlencoded",
-					url:"http://localhost:8888/user/getotp",
+					url:"http://localhost:8090/user/getotp",
 					data:{
-						"telphone": $("#telphone").val(),
+						"telephone": $("#telephone").val(),
 					},
 					xhrFields:{withCredentials:true},
 					success:function(data){
