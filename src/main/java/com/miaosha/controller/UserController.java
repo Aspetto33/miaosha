@@ -26,7 +26,7 @@ import java.util.Random;
 
 @Controller("user")
 @RequestMapping("/user")
-@CrossOrigin
+@CrossOrigin(allowCredentials = "true",allowedHeaders = "*")
 public class UserController extends BaseController{
     @Resource
     private UserService userService;
@@ -60,15 +60,15 @@ public class UserController extends BaseController{
     @RequestMapping(value = "/register",method = {RequestMethod.POST},consumes = {"application/x-www-form-urlencoded"})
     @ResponseBody
     public CommonReturnType register(@RequestParam(name="telephone")String telephone,
-                                     @RequestParam(name="optCode")String optCode,
+                                     @RequestParam(name="otpCode")String otpCode,
                                      @RequestParam(name="name")String name,
                                      @RequestParam(name = "gender")Integer gender,
                                      @RequestParam(name = "age")Integer age,
                                      @RequestParam(name = "password")String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
 
-        //验证手机号和对应的optCode相符合
-        String inSessionOptCode = (String) this.httpServletRequest.getSession().getAttribute(telephone);
-        if(!com.alibaba.druid.util.StringUtils.equals(optCode,inSessionOptCode)){
+        //验证手机号和对应的otpCode相符合
+        String inSessionotpCode = (String) this.httpServletRequest.getSession().getAttribute(telephone);
+        if(!com.alibaba.druid.util.StringUtils.equals(otpCode,inSessionotpCode)){
             throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR,"短信验证码不符合");
         }
 
@@ -78,6 +78,7 @@ public class UserController extends BaseController{
         userModel.setGender(new Byte(String.valueOf(gender.intValue())));
         userModel.setAge(age);
         userModel.setTelephone(telephone);
+        userModel.setRegisterMode("byphone");
         userModel.setEncrptPassword(this.EncodeByMd5(password));
 
         userService.register(userModel);
@@ -102,13 +103,13 @@ public class UserController extends BaseController{
         Random random = new Random();
         int randomInt = random.nextInt(99999);
         randomInt += 10000;
-        String optCode = String.valueOf(randomInt);
+        String otpCode = String.valueOf(randomInt);
 
         //将otp验证码同对应用户的手机号关联,使用httpsession的方式绑定他的手机号与otpcode
-        httpServletRequest.getSession().setAttribute(telephone,optCode);
+        httpServletRequest.getSession().setAttribute(telephone,otpCode);
 
         //将otp验证码通过短信通道发送给用户，省略
-        System.out.println("telephone = "+telephone+"&otpCode = "+optCode);
+        System.out.println("telephone = "+telephone+"&otpCode = "+otpCode);
 
         return CommonReturnType.create(null);
     }
