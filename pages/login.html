@@ -29,7 +29,7 @@
                         <div class="field">
                             <div class="ui left icon input">
                                 <i class="user icon"></i>
-                                <input type="text" name="telphone" id="telphone" placeholder="手机号">
+                                <input type="text" name="telephone" id="telephone" placeholder="手机号">
                             </div>
                         </div>
                         <div class="field">
@@ -63,13 +63,13 @@
 			
 			//绑定otp的click事件用于向后端获取验证码
 			$("#login").on("click", function(){
-				var telphone = $("#telphone").val();
+				var telephone = $("#telephone").val();
 				var otpCode = $("#otpCode").val();
 				var name = $("#name").val();
 				var gender = $("#gender").val();
 				var age = $("#age").val();
 				var password = $("#password").val();
-				if(telphone == null || telphone == ""){
+				if(telephone == null || telephone == ""){
 					alert("手机号不能为空");
 					return false;
 				}
@@ -80,9 +80,9 @@
 				$.ajax({
 					type:"POST",
 					contentType:"application/x-www-form-urlencoded",
-					url:"http://localhost:8888/user/login",
+					url:"http://localhost:8090/user/login",
 					data:{
-						"telphone": telphone,
+						"telephone": telephone,
 						"password": password
 					},
 					xhrFields:{withCredentials:true},
