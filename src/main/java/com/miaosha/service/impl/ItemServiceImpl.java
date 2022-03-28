@@ -11,12 +11,15 @@ import com.miaosha.service.model.ItemModel;
 import com.miaosha.validator.ValidationResult;
 import com.miaosha.validator.ValidatorImpl;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
 public class ItemServiceImpl implements ItemService {
     @Resource
     private ValidatorImpl validator;
@@ -71,7 +74,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemModel> listItem() {
-        return null;
+        List<ItemDO> itemDOList = itemDOMapper.listItem();
+        List<ItemModel> collect = itemDOList.stream().map(itemDO -> {
+            ItemStockDO itemStockDO = itemStockDOMapper.selectByItemId(itemDO.getId());
+            ItemModel itemModel = this.convertModelFromDataObject(itemDO, itemStockDO);
+            return itemModel;
+        }).collect(Collectors.toList());
+        return collect;
     }
 
     @Override
