@@ -69,7 +69,7 @@ public class ItemServiceImpl implements ItemService {
         itemStockDOMapper.insertSelective(itemStockDO);
 
         //返回创建完成的对象
-        return itemModel;
+        return getItemById(itemModel.getId());
     }
 
     @Override
@@ -96,6 +96,12 @@ public class ItemServiceImpl implements ItemService {
         ItemModel itemModel = convertModelFromDataObject(itemDO, itemStockDO);
 
         return itemModel;
+    }
+
+    @Override
+    @Transactional
+    public boolean decreaseStock(Integer itemId, Integer amount) {
+        return false;
     }
 
     private ItemModel convertModelFromDataObject(ItemDO itemDO,ItemStockDO itemStockDO){
